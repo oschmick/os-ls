@@ -8,6 +8,10 @@
 #define FALSE 0
 #define INDENT "    "
 
+int recurseDir(char *path, char *indent);
+int isDir(char *path);
+int getFileSize(char *path);
+
 extern stack_t *s;  // pointer to the stack to hold the listings
 
 #endif
