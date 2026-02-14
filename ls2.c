@@ -120,6 +120,9 @@ int getFileSize(char *path) {
     }
 }
 
+/**
+ * Helper method to free fullPath and nextIndent
+ */
 void freeMem(char *fullPath, char *nextIndent) {
     free(fullPath);
     free(nextIndent);
