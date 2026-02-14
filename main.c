@@ -17,14 +17,13 @@ int main(int argc, char* argv[]) {
 
 	s = initstack();
 	char *input = argv[1];
-	char *indent = "    ";
 
 	if (isDir(input)) {
 		printf("%s/ (directory)\n", input);
 		if (argc == 2) {
-			recurseDir(input, NULL, indent);
+			recurseDir(input, NULL, INDENT);
 		} else if (argc == 3) {
-			recurseDir(input, argv[2], indent);
+			recurseDir(input, argv[2], INDENT);
 			printstack(s);
 		}
 	} else {
