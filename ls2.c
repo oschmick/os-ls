@@ -7,10 +7,16 @@
 #include "ls2.h"
 
 int mode = FALSE;
-//int add = FALSE;
 
 /**
+ * Recursively searches through the given directory and 
+ * lists all directories and files if mode is 1
+ * or stores all directories in the path of any matching file if mode is 2
  * 
+ * @param path The base directory/file path
+ * @param target The file name to search for (NULL if in mode 1)
+ * @param indent The current indentation
+ * @return 1/TRUE upon success/target found, 0/FALSE otherwise
  */
 int recurseDir(char *path, char *target, char *indent) {
     DIR *dir;
@@ -18,13 +24,16 @@ int recurseDir(char *path, char *target, char *indent) {
     char *fullPath = malloc(MAX_PATH_SIZE);
     char *nextIndent = malloc(MAX_PATH_SIZE);
 
-    dir = opendir(path);
-
-    if (fullPath == NULL || nextIndent == NULL) return 0;
+    if (fullPath == NULL || nextIndent == NULL) {
+        if (fullPath) free(fullPath);
+        if (nextIndent) free(nextIndent);
+        return 0;
+    }
     
+    dir = opendir(path);
     if (dir == NULL) {
-        free(fullPath);
-        free(nextIndent);
+        closedir(dir);
+        freeMem(fullPath, nextIndent);
         return 0;
     }
 
@@ -48,7 +57,6 @@ int recurseDir(char *path, char *target, char *indent) {
                     snprintf(str, MAX_PATH_SIZE, "%s%s/ (directory)", indent, name);
                     push(s, str);
                     free(str);
-                    //add = FALSE;
                 }
             }
         } else {
@@ -57,14 +65,17 @@ int recurseDir(char *path, char *target, char *indent) {
                 if (mode == FALSE) {
                     printf("%s%s (%.0lf bytes)\n", indent, name, fileSize);
                 } else {
-                    //pushOntoStack(name, indent, target, fileSize);
                     if (strcmp(name, target) == 0) {
                         char *str = malloc(MAX_PATH_SIZE);
                         snprintf(str, MAX_PATH_SIZE, "%s%s (%.0lf bytes)", indent, name, fileSize);
                         push(s, str);
                         free(str);
+                        closedir(dir);
+                        freeMem(fullPath, nextIndent);
                         return TRUE;
                     } else {
+                        closedir(dir);
+                        freeMem(fullPath, nextIndent);
                         return FALSE;
                     }
                 }
@@ -72,8 +83,7 @@ int recurseDir(char *path, char *target, char *indent) {
         }
     }
     closedir(dir);
-    free(fullPath);
-    free(nextIndent);
+    freeMem(fullPath, nextIndent);
     return 1;
 }
 
@@ -110,22 +120,7 @@ int getFileSize(char *path) {
     }
 }
 
-/**
- * Helper method to push a file onto the stack.
- * @param name The path/name of the directory
- * @param indent The current indentation
- * @param file The file to look for
- * @return TRUE (1) if true and FALSE (0) if false
- */
-void pushOntoStack(char *name, char *indent, char *file, double fileSize) {
-    if (strcmp(name, file) == 0) {
-        char *str = malloc(MAX_PATH_SIZE);
-        snprintf(str, MAX_PATH_SIZE, "%s%s (%.0lf bytes)", indent, name, fileSize);
-        push(s, str);
-        free(str);
-        //add = TRUE;
-    } 
-    // else {
-    //     return FALSE;
-    // }
+void freeMem(char *fullPath, char *nextIndent) {
+    free(fullPath);
+    free(nextIndent);
 }

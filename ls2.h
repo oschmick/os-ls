@@ -12,7 +12,7 @@
 int recurseDir(char *path, char *file, char *indent);
 int isDir(char *path);
 int getFileSize(char *path);
-void pushOntoStack(char *name, char *indent, char *file, double fileSize);
+void freeMem(char *fullPath, char *nextIndent);
 
 extern stack_t *s;  // pointer to the stack to hold the listings
 

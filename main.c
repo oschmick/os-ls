@@ -29,34 +29,10 @@ int main(int argc, char* argv[]) {
 		}
 	} else {
 		printf("%s is not a directory path! Exiting...\n", input);
+		freestack(s);
 		return 1;
 	}
 
 	freestack(s);
 	return 0;
-
-
-
-
-	/*
-	// stack stores the lines to print out
-	stack_t *s = initstack();
-
-	push(s, "Hello1");
-	push(s, "Hello2");
-	push(s, "Hello3");
-
-	// print stack
-	printstack(s);
-
-	char *top = pop(s);
-	printf("Top of stack: %s\n", top);
-
-	// print stack
-	printstack(s);
-
-	// free stack
-	freestack(s);
-	return 0;
-	*/
 }
